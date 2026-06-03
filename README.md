@@ -20,7 +20,9 @@ Séries temporais altamente previsı́veis apresentam um baixo ı́ndice de Lemp
 Desenvolvido para avaliar a estabilidade de soluções em equações diferenciais, é usado na análise de séries temporais para quantificar a sensibilidade do sistema a condições iniciais.  
 Ele mede a taxa média exponencial de divergência ou convergência de duas trajetórias no espaço de fase que se iniciam em pontos muito próximos. Se $\lambda_{max} > 0$, o sistema exibe comportamento caótico, indicando que trajetórias vizinhas se separam exponencialmente com o tempo. 
 
-**Biblioteca(s) utilizada(s):** \[insira a biblioteca]
+**Biblioteca(s) utilizada(s):** 
+- nolds ([lyap_r, lyap_e](https://pypi.org/project/nolds/)).
+- Lyapynv ([GitHub - ThomasSavary08](https://github.com/ThomasSavary08/Lyapynov)).
 
 ## Métodos de Entropia
 ### Entropia de Shannon
@@ -43,5 +45,19 @@ A usabilidade da PE baseia-se na extração de padrões ordinais, seguindo os se
 **Biblioteca(s) utilizada(s):** 
 - ordpy ([ordpy.permutation_entropy](https://arthurpessa.github.io/ordpy/_build/html/index.html#ordpy.permutation_entropy)).
 - AntroPy ([ant.perm_entropy](https://raphaelvallat.com/antropy/#entropy)).
+- EntropyHub 2.0 ([PermEn](https://pypi.org/project/EntropyHub/)).
 
 ### Entropia Multiescala
+Desenvolvida para superar a limitação
+de métricas de entropia tradicionais, que operam em uma única escala de tempo e
+frequentemente falham em distinguir séries aleatórias (ruı́do branco) de processos complexos que possuem dependências de longo prazo.  
+Consiste em dois passos principais:
+1. *Coarse-Graining:* Processo de granulação da série onde janelas de tamanho τ (fator de escala) são agrupadas e suas médias são calculadas, gerando múltiplas séries representativas de diferentes escalas de tempo.
+2. *Sample Entropy:* Calcula a SampEn para cada sub-série gerada.
+
+**Biblioteca(s) utilizada(s):**
+- EntropyHub 2.0 ([MSEn - MSobject('SampEn')](https://pypi.org/project/EntropyHub/)).
+- MultiScaleEntropy ([GitHub - inuritdino](https://github.com/inuritdino/MultiScaleEntropy)).
+- py-msentropy ([GitHub - antoine-jamin](https://github.com/antoine-jamin/py-msentropy)).
+- **Sample Entropy:** AntroPy ([ant.sample_entropy](https://raphaelvallat.com/antropy/#entropy)).
+- **Material/biblioteca (C) de apoio:** [Tutorial PhysioNet](https://physionet.org/files/mse/1.0/tutorial/tutorial.pdf).
