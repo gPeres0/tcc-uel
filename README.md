@@ -61,3 +61,77 @@ Consiste em dois passos principais:
 - py-msentropy ([GitHub - antoine-jamin](https://github.com/antoine-jamin/py-msentropy)).
 - **Sample Entropy:** AntroPy ([ant.sample_entropy](https://raphaelvallat.com/antropy/#entropy)).
 - **Material/biblioteca (C) de apoio:** [Tutorial PhysioNet](https://physionet.org/files/mse/1.0/tutorial/tutorial.pdf).
+
+# Ferramentas
+## Bibliotecas Utilizadas
+Em cada método descrito acima, foram coletadas possíveis bibliotecas/APIs que implementam dado método. Aqui, são descritas as ferramentas que, após análise, serão de fato utilizadas no projeto.
+
+### AntroPy
+Documentação em https://raphaelvallat.com/antropy/.
+##### Utilidade:
+Cálculo de complexidade de Lempel-Ziv e entropia de permutação.
+##### Instalação:
+```bash 
+pip install antropy
+```
+##### Dependências:
+- Python 3.10+;
+- NumPy  (≥ 1.22.4); 
+- SciPy (≥ 1.8.0);
+- scikit-learn (≥ 1.2.0);
+- Numba (≥ 0.57).
+
+### Nolds
+Documentação em https://cschoel.github.io/nolds/.
+##### Utilidade:
+Cálculo de expoente de Lyapunov.
+##### Instalação:
+```bash 
+pip install nolds
+```
+##### Dependências:
+- Python 2.7+ e 3.4+;
+- Numpy;
+- matplotlib (plots com `nolds.examples`).
+
+### SciPy (scipy.stats)
+Documentação em https://docs.scipy.org/doc/scipy/tutorial/stats.html.
+##### Utilidade:
+Cálculo da entropia de Shannon.
+##### Instalação:
+```bash 
+pip install scipy
+```
+##### Dependências:
+Não descritas na documentação.
+
+### EntropyHub
+Documentação em https://github.com/MattWillFlood/EntropyHub/blob/main/EntropyHub%20Guide.pdf.
+##### Utilidade:
+Cálculo de entropia de permutação e MSE.
+##### Instalação:
+```bash 
+pip install EntropyHub
+```
+##### Dependências:
+- Python 3.6+;
+- Numpy;
+- Scipy;
+- Matplotlib;
+- PyEMD.
+
+### OrdPy
+Documentação em https://arthurpessa.github.io/ordpy/_build/html/index.html#.
+##### Utilidade:
+Cálculo de entropia de permutação.
+##### Instalação:
+```bash 
+pip install ordpy
+```
+##### Dependências:
+Não descritas na documentação.
+
+### Instalação geral
+```bash 
+pip install antropy nolds scipy EntropyHub ordpy
+```
