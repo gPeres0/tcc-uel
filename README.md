@@ -135,3 +135,4 @@ Não descritas na documentação.
 ```bash 
 pip install antropy nolds scipy EntropyHub ordpy
 ```
+

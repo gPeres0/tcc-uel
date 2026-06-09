@@ -1,5 +1,9 @@
 import operations as op
 
+
+def calculate_score():
+    pass
+
 def print_results():
     return print(
         '''===== RESULTADOS DA AVALIAÇÃO =====
