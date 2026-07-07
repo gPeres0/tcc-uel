@@ -20,6 +20,7 @@ numba==0.65.1
 numpy==2.4.6
 ordpy==1.2.2
 packaging==26.2
+pandas==3.0.3
 pathos==0.3.5
 pillow==12.2.0
 pox==0.3.7

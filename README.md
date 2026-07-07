@@ -108,7 +108,7 @@ Não descritas na documentação.
 ### EntropyHub
 Documentação em https://github.com/MattWillFlood/EntropyHub/blob/main/EntropyHub%20Guide.pdf.
 ##### Utilidade:
-Cálculo de entropia de permutação e MSE.
+Cálculo de entropia de permutação (não será utilizado) e MSE.
 ##### Instalação:
 ```bash 
 pip install EntropyHub
