@@ -60,7 +60,7 @@ SENSORES_VALIDOS = {
     "pressao",
     "raj10m",
     "tempminar2m",
-    "tempsolocm20cm",
+    "tempsolocm2cm",
     "tempsolonu20cm",
     "tempsolonu100cm",
     "ventodir10m",
