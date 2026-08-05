@@ -6,7 +6,7 @@ import pandas as pd
 from pmdarima.arima import auto_arima
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
-from plots import plot_predictions
+from ..plots import plot_predictions
 
 # ==================== #
 
@@ -101,7 +101,8 @@ def main():
             })
 
             print(F"FOI O {sensor}{sufixo} HEIN...")
-            # plot_predictions(sensor, sufixo, df_treino, df_teste, predicoes)
+            output_path = "results"
+            plot_predictions(output_path, sensor, sufixo, df_treino, df_teste, predicoes)
 
     print("ACABOU ESSA DESGRAÇA PORRAAAAAAAAAAAAAAAAAAAAA")
     return resultados

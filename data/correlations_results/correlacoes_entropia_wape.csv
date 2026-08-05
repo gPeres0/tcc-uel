@@ -1,0 +1,13 @@
+window_days, metric   , n , spearman_rho, spearman_p, kendall_tau, kendall_p, spearman_significant_fdr, kendall_significant_fdr, spearman_strength, kendall_strength
+          1, lempelziv, 10, 0.60803     ,    0.06218, 0.40202    ,   0.13149, False                   , False                  , forte            , moderada
+          1, mse_ci   , 10, 0.44985     ,    0.19208, 0.22473    ,   0.36917, False                   , False                  , moderada         , fraca
+          1, perm     , 10, 0.54104     ,    0.10632, 0.58431    ,   0.01955, False                   , False                  , forte            , forte
+          1, shannon  , 10, -0.61398    ,    0.05898, -0.53936   ,   0.03114, False                   , False                  , forte            , forte
+          3, lempelziv, 10, 0.7447      ,    0.01347, 0.58203    ,   0.02267, False                   , False                  , muito forte      , forte
+          3, mse_ci   , 10, 0.33333     ,    0.34659, 0.11111    ,   0.72749, False                   , False                  , moderada         , fraca
+          3, perm     , 10, 0.50303     ,    0.13833, 0.42222    ,   0.10831, False                   , False                  , forte            , moderada
+          3, shannon  , 10, 0.07879     ,    0.82872, 0.02222    ,   1.0    , False                   , False                  , desprezível      , desprezível
+          7, lempelziv, 10, 0.74164     ,    0.01408, 0.58431    ,   0.01955, False                   , False                  , muito forte      , forte
+          7, mse_ci   , 10, 0.6         ,    0.06669, 0.42222    ,   0.10831, False                   , False                  , forte            , moderada
+          7, perm     , 10, 0.58788     ,    0.07388, 0.37778    ,   0.15574, False                   , False                  , forte            , moderada
+          7, shannon  , 10, 0.05455     ,    0.88104, -0.06667   ,   0.8618 , False                   , False                  , desprezível      , desprezível

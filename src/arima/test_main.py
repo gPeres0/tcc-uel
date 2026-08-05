@@ -4,7 +4,7 @@ import glob
 import pandas as pd
 from pmdarima.arima import auto_arima
 
-from plots import plot_predictions
+from arima.plot_predictions import plot_predictions
 from main_arima import sensor_name, metrics
 
 # ==================== #
