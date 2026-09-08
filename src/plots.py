@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import pandas as pd
 import numpy as np
 
@@ -40,21 +41,8 @@ def plot_predictions(path:str, sensor:str, period:str, y_treino, y_teste, y_pred
 
     return print(f"Salvo {file_name}")
 
-def plot_correlations():
-    # df_entropias = pd.read_csv("../data/resultados_entropia.csv")
-    # df_arima = pd.read_csv("arima/results/resultados_autoarima.csv")
 
-    # timestamps = df_arima["period"].str.extract(r"(\d+)").astype(int)
-    # valores_wape = df_arima["wape"].str.replace("%", "", regex=False).astype(float)
-    # valores_shannon = df_entropias["shannon"]
-    # valores_lempelziv = df_entropias["lempelziv"]
-    # valores_perm = df_entropias["perm"]
-    # valores_mse = df_entropias["mse_ci"]
-
-
-    # plt.figure(figsize=(5, 12))
-    # plt.plot(timestamps, valores_wape, )
-
+def plot_correlations_by_sensor():
     # 1. Carregar os dados
     df_entropia = pd.read_csv('../data/resultados_entropia.csv')
     df_autoarima = pd.read_csv('../data/arima_results/resultados_autoarima.csv')
@@ -128,5 +116,175 @@ def plot_correlations():
     print("Todos os gráficos foram gerados e salvos com sucesso!")
 
 
+def plot_correlations_by_period():
+    df_correlacoes = pd.read_csv("../data/correlations_results/correlacoes_entropia_wape.csv")
+    janelas = df_correlacoes['window_days'].unique()
 
-# plot_correlations()
+    cores = {
+        'lempelziv': 'red',
+        'mse_ci': 'green',
+        'perm': 'blue',
+        'shannon': 'purple' # Amarelo adicionado para o shannon
+    }
+
+    rotulos = { 
+        'lempelziv': 'lempelziv',
+        'mse_ci': 'mse-ci',
+        'perm': 'perm',
+        'shannon': 'shannon'
+    }
+
+    for w in janelas:
+        fig, ax = plt.subplots(figsize=(11, 6))
+        
+        # Filtra os dados apenas para a janela atual
+        df_w = df_correlacoes[df_correlacoes['window_days'] == w]
+        metricas = df_w['metric'].tolist()
+        
+        # Posições base no eixo X para as métricas (espaçamento entre blocos)
+        posicoes_base = [1, 3, 5, 7] 
+        largura = 0.25
+        
+        todas_posicoes = []
+        todos_rotulos = []
+
+        # Plotagem iterativa para cada métrica encontrada nesta janela
+        for i, metric in enumerate(metricas):
+            linha = df_w[df_w['metric'] == metric].iloc[0]
+            
+            # Coleta as correlações (usando valor absoluto para o tamanho da barra bater com o lado positivo)
+            rho = abs(linha['spearman_rho'])
+            tau = abs(linha['kendall_tau'])
+            
+            pos_rho = posicoes_base[i]
+            pos_tau = posicoes_base[i] + largura + 0.15
+            
+            cor = cores.get(metric, '#cccccc')
+            label_legenda = rotulos.get(metric, metric)
+            
+            ax.bar([pos_rho, pos_tau], [rho, tau], width=largura, color=cor, 
+                edgecolor='black', linewidth=1, label=label_legenda, zorder=3)
+            
+            todas_posicoes.extend([pos_rho, pos_tau])
+            todos_rotulos.extend([r'$\rho$', r'$\tau$'])
+
+        # --- LINHAS HORIZONTAIS E EIXO Y ---
+        niveis = [0.1, 0.3, 0.5, 0.7]
+        ax.hlines(y=niveis, xmin=0, xmax=max(todas_posicoes) + 1, 
+                colors='black', linestyles='dashed', linewidth=1, zorder=0)
+
+        ax.set_yticks(niveis)
+        ax.set_yticklabels(['0,1', '0,3', '0,5', '0,7'])
+        ax.set_ylim(0, 0.9)
+
+        # --- EIXO X ---
+        ax.set_xticks(todas_posicoes)
+        ax.set_xticklabels(todos_rotulos)
+        ax.set_xlim(0, max(todas_posicoes) + 1.5)
+        
+        # --- TEXTOS DE CLASSIFICAÇÃO LATERAIS ---
+        x_textos = max(todas_posicoes) + 1.2
+        ax.text(x_textos, 0.05, 'desprezível', va='center', ha='left', fontsize=12)
+        ax.text(x_textos, 0.20, 'fraca', va='center', ha='left', fontsize=12)
+        ax.text(x_textos, 0.40, 'moderada', va='center', ha='left', fontsize=12)
+        ax.text(x_textos, 0.60, 'forte', va='center', ha='left', fontsize=12)
+        ax.text(x_textos, 0.80, 'muito forte', va='center', ha='left', fontsize=12)
+
+        # --- ESTILIZAÇÃO GERAL ---
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['left'].set_linewidth(1.2)
+        ax.spines['bottom'].set_linewidth(1.2)
+
+        ax.legend(loc='upper left', bbox_to_anchor=(-0.15, 1.15), frameon=True, 
+                edgecolor='black', fancybox=True, borderpad=1, labelspacing=1)
+                
+        plt.title(f'Janela de {w} Dias', pad=20)
+        plt.tight_layout()
+        
+        # Salva a imagem atual
+        nome_arquivo = f'../data/correlations_results/plots/plots_by_period/corr_plot_{w}_days.png'
+        plt.savefig(nome_arquivo, dpi=300)
+        plt.close() # Fecha a figura atual para liberar memória antes da próxima
+        
+        print(f"Salvo: {nome_arquivo}")
+
+
+def plot_correlations_heatmap(data, pvals, titulo, nome_arquivo):
+    """
+    Gera dois heatmaps (Spearman e Kendall) relacionando métricas de entropia
+    com janelas temporais (window_days), a partir de correlacoes_entropia_wape.csv.
+    """
+
+    fig, ax = plt.subplots(figsize=(6, 5))
+    im = ax.imshow(data.values, cmap=CMAP, vmin=VMIN, vmax=VMAX, aspect="auto")
+
+    ax.set_xticks(range(len(window_order)))
+    ax.set_xticklabels([f"{d}d" for d in window_order])
+    ax.set_yticks(range(len(metric_order)))
+    ax.set_yticklabels(metric_order)
+    ax.set_xlabel("Janela (dias)")
+    ax.set_title(titulo, fontsize=12, fontweight="bold")
+
+    # Anotações: valor da correlação + asterisco se p < 0.05 (sem FDR)
+    for i in range(data.shape[0]):
+        for j in range(data.shape[1]):
+            val = data.iat[i, j]
+            p = pvals.iat[i, j]
+            sig = "*" if pd.notna(p) and p < 0.05 else ""
+            # cor do texto adapta ao fundo para manter contraste
+            text_color = "white" if abs(val) > 0.6 else "black"
+            ax.text(
+                j, i, f"{val:.2f}{sig}",
+                ha="center", va="center",
+                color=text_color, fontsize=10, fontweight="bold"
+            )
+
+    cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+    cbar.set_label("Coeficiente de correlação")
+
+    # fig.text(
+    #     0.5, -0.03,
+    #     "* p-valor bruto < 0.05 (sem correção FDR)",
+    #     ha="center", fontsize=9, style="italic"
+    # )
+
+    plt.tight_layout()
+    plt.savefig(nome_arquivo, dpi=200, bbox_inches="tight")
+    # plt.show()
+    # plt.close(fig)
+
+
+# plot_correlations_by_period()
+
+
+# --- 1. Carregar dados -------------------------------------------------
+df = pd.read_csv("../data/correlations_results/correlacoes_entropia_wape.csv")
+
+# Ordem fixa para deixar os eixos consistentes e legíveis
+metric_order = ["shannon", "perm", "lempelziv", "mse_ci"]
+window_order = sorted(df["window_days"].unique())
+
+def pivot(value_col):
+    return (
+        df.pivot(index="metric", columns="window_days", values=value_col)
+        .reindex(index=metric_order, columns=window_order)
+    )
+
+rho = pivot("spearman_rho")
+tau = pivot("kendall_tau")
+p_rho = pivot("spearman_p")
+p_tau = pivot("kendall_p")
+
+# --- 2. Configuração visual compartilhada -------------------------------
+VMIN, VMAX = -1, 1
+CMAP = mcolors.LinearSegmentedColormap.from_list(
+    "rdbu_r", plt.cm.RdBu_r(np.linspace(0, 1, 256))
+)
+
+
+plot_correlations_heatmap(rho, p_rho, "Correlação de Spearman (ρ) — entropia x WAPE",
+                "../data/correlations_results/plots/heatmaps/heatmap_spearman.png")
+
+plot_correlations_heatmap(tau, p_tau, "Correlação de Kendall (τ) — entropia x WAPE",
+                "../data/correlations_results/plots/heatmaps/heatmap_kendall.png")
