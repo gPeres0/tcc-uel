@@ -15,12 +15,25 @@ from scipy import stats
 df_batmin_1d = pd.read_csv('../data/1day/batmin_1d.csv')
 df_batmin_3d = pd.read_csv('../data/3days/batmin_3d.csv')
 df_batmin_7d = pd.read_csv('../data/7days/batmin_7d.csv')
+df_ventovel10m_1d = pd.read_csv('../data/1day/ventovel10m_1d.csv')
+df_ventovel10m_3d = pd.read_csv('../data/3days/ventovel10m_3d.csv')
+df_ventovel10m_7d = pd.read_csv('../data/7days/ventovel10m_7d.csv')
 
 batmin_1d = df_batmin_1d['valor'].values
 batmin_3d = df_batmin_3d['valor'].values
 batmin_7d = df_batmin_7d['valor'].values
+ventovel10m_1d = df_ventovel10m_1d['valor'].values
+ventovel10m_3d = df_ventovel10m_3d['valor'].values
+ventovel10m_7d = df_ventovel10m_7d['valor'].values
 
-full_data = [batmin_1d, batmin_3d, batmin_7d]
+full_data = {
+    "batmin_1d": batmin_1d, 
+    "batmin_3d": batmin_3d, 
+    "batmin_7d": batmin_7d, 
+    "ventovel10m_1d": ventovel10m_1d, 
+    "ventovel10m_3d": ventovel10m_3d, 
+    "ventovel10m_7d": ventovel10m_7d
+}
 
 
 # ============= FUNÇÕES DE TESTE ============= #
@@ -37,8 +50,7 @@ def lempelZivTest_Padrao(data):
 # ---
 
 def lyapunovTest(data):
-    # Kwargs mais realistas para 1500 data points (segundo o gemini)
-    return nolds.lyap_r(data, emb_dim=3, lag=1) # Expoente de Lyapunov com algoritmo de Rosenstein et al
+    return nolds.lyap_r(data) # Expoente de Lyapunov com algoritmo de Rosenstein et al
 
 # ---
 
@@ -100,32 +112,25 @@ def mseTest(data):
 # =========== EXECUÇÃO DOS TESTES =========== #
 
 def run_all_tests(full_data):
-    i = 1
-    for data in full_data:
-        if i == 1:
-            data_type = 'batmin_1d'
-        elif i == 2:
-            data_type = 'batmin_3d'
-        else:
-            data_type = 'batmin_7d'
+    for key, data in full_data.items():
 
-        print(f"\n===== Testing with {data_type} =====\n")
+        print(f"\n===== Testing with {key} =====\n")
         # print("--- Lempel-Ziv Complexity Regular Norm ---")
         # LZp = lempelZivTest_Padrao(data)
         # print(f"LZp norm: {LZp}")
 
-        # print("--- Lyapunov Exponent ---")
-        # lyap_r = lyapunovTest(data)
-        # print(f"LYAP: {lyap_r:.4}")
+        print("--- Lyapunov Exponent ---")
+        lyap_r = lyapunovTest(data)
+        print(f"LYAP: {lyap_r:.4}")
 
         # print("--- Shannon Entropy ---")
         # shan, shan_norm = shannonTest(data)
         # print(f"SHAN: {shan}")
         # print(f"SHAN norm: {shan_norm}")
 
-        print("--- Permutation Entropy ---")
-        PE = permEnTest(data)
-        print(f"PE norm: {PE:.4}")
+        # print("--- Permutation Entropy ---")
+        # PE = permEnTest(data)
+        # print(f"PE norm: {PE:.4}")
 
         # print("--- Multiscale Entropy ---")
         # MSx, Ci = mseTest(data)
@@ -133,6 +138,5 @@ def run_all_tests(full_data):
         # # Ci (complexity index) é definido como a soma cumulativa (área) das complexidades (curva). 
         # print(f"Ci: {Ci:.4}") 
 
-        i+=1
 
 run_all_tests(full_data)
