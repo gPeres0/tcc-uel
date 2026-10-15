@@ -43,6 +43,7 @@ OUTPUT_DIR = {
     "1 dia": "../data/1day/",
     "3 dias": "../data/3days/",
     "7 dias": "../data/7days/",
+    "15 dias": "../data/15days/",
 }
 SEP_SAIDA = ","          # separador dos arquivos de saída
 
@@ -72,6 +73,7 @@ PERIODO_SUFIXO = {
     "1 dia": "1d",
     "3 dias": "3d",
     "7 dias": "7d",
+    "15 dias": "15d"
 }
 
 # Frequência esperada das medições (usada para preencher horários faltantes no período)
@@ -80,12 +82,6 @@ FREQ_DADOS = "15min"
 # ============================================================
 # 2. FUNÇÕES AUXILIARES
 # ============================================================
-
-def parse_data_mmdd(data_str: str, hora_str: str, ano: int) -> datetime:
-    """Converte 'MM/DD' + 'HH:MM' + ano em datetime."""
-    mes, dia = data_str.strip().split("/")
-    return datetime.strptime(f"{ano}-{int(mes):02d}-{int(dia):02d} {hora_str.strip()}",
-                              "%Y-%m-%d %H:%M")
 
 
 def limpar_nome_sensor(nome: str) -> str:
@@ -149,11 +145,16 @@ for _, linha in df_janelas.iterrows():
     output = OUTPUT_DIR.get(periodo_total, re.sub(r"\s+", "_", periodo_total))
 
     try:
-        inicio_treino = parse_data_mmdd(linha["Data Início Treino"], linha["Hora1"], ANO_REFERENCIA)
-        fim_teste = parse_data_mmdd(linha["Data Fim Teste"], linha["Hora3"], ANO_REFERENCIA)
-    except Exception as e:
-        print(f"[AVISO] Não foi possível interpretar as datas da linha (sensor={sensor_raw}, "
+        inicio_treino = pd.to_datetime(linha["data_hora_inicio_treino"])
+        fim_treino = pd.to_datetime(linha["data_hora_fim_treino"])
+        fim_teste = pd.to_datetime(linha["data_hora_fim_teste"])
+    except KeyError as e:
+        print(f"[AVISO] Colunas ausentes na linha (sensor={sensor_raw}, "
               f"período={periodo_total}): {e}. Pulando.")
+        continue
+    except ValueError as e:
+        print(f"[AVISO] Não foi possível interpretar as datas da linha "
+              f"(sensor={sensor_raw}, período={periodo_total}): {e}. Pulando.")
         continue
 
     # Caso o período cruze a virada do ano (fim menor que início), soma 1 ano ao fim
