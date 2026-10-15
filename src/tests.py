@@ -49,8 +49,8 @@ def lempelZivTest_Padrao(data):
 
 # ---
 
-def lyapunovTest(data):
-    return nolds.lyap_r(data) # Expoente de Lyapunov com algoritmo de Rosenstein et al
+def lyapunovTest(data, m=10):
+    return nolds.lyap_r(data, emb_dim=m) # Expoente de Lyapunov com algoritmo de Rosenstein et al
 
 # ---
 
@@ -120,8 +120,9 @@ def run_all_tests(full_data):
         # print(f"LZp norm: {LZp}")
 
         print("--- Lyapunov Exponent ---")
-        lyap_r = lyapunovTest(data)
-        print(f"LYAP: {lyap_r:.4}")
+        for m in range(2, 11):
+            lyap_r = lyapunovTest(data, m)
+            print(f"\nm = {m}\nLYAP: {lyap_r:.4}\n")
 
         # print("--- Shannon Entropy ---")
         # shan, shan_norm = shannonTest(data)
