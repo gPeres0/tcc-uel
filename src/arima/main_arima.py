@@ -5,19 +5,23 @@ import numpy as np
 import pandas as pd
 from pmdarima.arima import auto_arima
 from sklearn.metrics import mean_absolute_error, mean_squared_error
+from pathlib import Path
 
-from ..plots import plot_predictions
+from src.plots import plot_predictions
 
 # ==================== #
 
 REFERENCIA_DIR = 'data_separation_sheet.csv'
 
-DATA_DIR = '../../data'
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+REFERENCIA_DIR = DATA_DIR / "data_separation_sheet.csv"
+
 # (nome da pasta, sufixo do arquivo, número de dias)
 PERIODOS = [
-    ('1day', '_1d', '1 dia'),
-    ('3days', '_3d', '3 dias'),
-    ('7days', '_7d', '7 dias'),
+    # ('1day', '_1d', '1 dia'),
+    # ('3days', '_3d', '3 dias'),
+    # ('7days', '_7d', '7 dias'),
+    ('15days', '_15d', '15 dias')
 ]
 
 # ==================== #
@@ -44,12 +48,12 @@ def metrics(y_real, y_pred):
 def main():
     resultados = []
 
-    df_dir = os.path.join(DATA_DIR, REFERENCIA_DIR)
+    df_dir = REFERENCIA_DIR
     df = pd.read_csv(df_dir, quoting=csv.QUOTE_MINIMAL)
     
     for pasta, sufixo, n_dias in PERIODOS:
-        pasta_completa = os.path.join(DATA_DIR, pasta)
-        arquivos_csv = sorted(glob.glob(os.path.join(pasta_completa, '*.csv')))
+        pasta_completa = DATA_DIR / pasta
+        arquivos_csv = sorted(pasta_completa.glob("*.csv"))
 
         if not arquivos_csv:
             print(f"[aviso] Nenhum CSV encontrado em: {pasta_completa}")
@@ -101,7 +105,7 @@ def main():
             })
 
             print(F"FOI O {sensor}{sufixo} HEIN...")
-            output_path = "results"
+            output_path = DATA_DIR / "arima_results"
             plot_predictions(output_path, sensor, sufixo, df_treino, df_teste, predicoes)
 
     print("ACABOU ESSA DESGRAÇA PORRAAAAAAAAAAAAAAAAAAAAA")
