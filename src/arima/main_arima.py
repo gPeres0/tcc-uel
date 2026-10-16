@@ -114,4 +114,10 @@ def main():
 if __name__ == '__main__':
     resultados = main()
     df = pd.DataFrame(resultados)
-    df.to_csv('results/resultados_autoarima.csv', index=False)
+    output_file = DATA_DIR / 'arima_results' / 'resultados_autoarima.csv'
+    df.to_csv(
+        output_file,
+        mode='a',
+        header=not output_file.exists() or output_file.stat().st_size == 0,
+        index=False,
+    )
