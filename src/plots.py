@@ -19,14 +19,14 @@ def plot_data(output_path:str, title:str, data):
     return print(f"Salvo arquivo {title}")
 
 
-def plot_predictions(path:str, sensor:str, period:str, y_treino, y_teste, y_pred):
+def plot_predictions(path:str, sensor:str, period:str, y_treino, y_teste, y_pred, model):
     if period == '_1d':     plot_dir = 'plots_1d'
     elif period == '_3d':   plot_dir = 'plots_3d'    
     elif period == '_7d':   plot_dir = 'plots_7d'
     elif period == '_15d':  plot_dir = 'plots_15d'
     else:                   return print(f"[PLOT_ERROR] period = {period}")    
         
-    file_name = f"{path}/{plot_dir}/{sensor}{period}_plot_arima.png"
+    file_name = f"{path}/{plot_dir}/{sensor}{period}_plot_{model}.png"
     
     # série de treino/histórico
     timestamps_treino = y_treino.index

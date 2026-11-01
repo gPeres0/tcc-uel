@@ -16,8 +16,7 @@ def lempel_ziv_complexity(data):
 
 
 def lyapunov_exponent(data):
-    # min_tsep, lag = None (calculados automaticamente)
-    return nolds.lyap_r(data) # Estudar e verificar parâmetros
+    return nolds.lyap_r(data) # min_tsep, lag = None (calculados automaticamente)
 
 
 def shannon_entropy(data):
