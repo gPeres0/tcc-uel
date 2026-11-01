@@ -93,7 +93,7 @@ def main():
                 predicoes.append(prediction)
                 model.update(y_teste.iloc[i])
             
-            mae, mape, mse = metrics(y_teste, predicoes)
+            mae, wape, mse = metrics(y_teste, predicoes)
             
             resultados.append({
                 'sensor': sensor,
@@ -101,12 +101,12 @@ def main():
                 'order': model.order,
                 'mae': round(mae,3),
                 'mse': round(mse,3),
-                'wape': f"{round(mape,3)}%"
+                'wape': f"{round(wape,3)}%"
             })
 
             print(F"FOI O {sensor}{sufixo} HEIN...")
             output_path = DATA_DIR / "arima_results"
-            plot_predictions(output_path, sensor, sufixo, df_treino, df_teste, predicoes)
+            plot_predictions(output_path, sensor, sufixo, df_treino, df_teste, predicoes, "arima")
 
     print("ACABOU ESSA DESGRAÇA PORRAAAAAAAAAAAAAAAAAAAAA")
     return resultados
