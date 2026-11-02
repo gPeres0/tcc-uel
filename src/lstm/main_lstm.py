@@ -20,7 +20,7 @@ DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 REFERENCIA_DIR = DATA_DIR / "data_separation_sheet.csv"
 
 PERIODOS = [
-    # ('1day', '_1d', '1 dia'),
+    ('1day', '_1d', '1 dia'),
     ('3days', '_3d', '3 dias'),
     ('7days', '_7d', '7 dias'),
     ('15days', '_15d', '15 dias')
@@ -186,7 +186,7 @@ def main():
             print(f"Iniciando predicao de {sensor}{sufixo}...")
             predictions = prever_lstm(y_treino, y_teste, seed=0)
             
-            mae, wape, mse = main_arima.metrics(y_teste, predictions)
+            mae, mse, wape = main_arima.metrics(y_teste, predictions)
             
             resultados.append({
                 'sensor': sensor,
