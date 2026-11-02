@@ -1,0 +1,9 @@
+window_days,metric,n,spearman_rho,spearman_p,kendall_tau,kendall_p,spearman_strength,kendall_strength
+1,wape_arima,10,0.83523,0.00263,0.68802,0.01035,muito forte,forte
+1,wape_lstm,10,0.67378,0.03266,0.52915,0.04689,forte,forte
+3,wape_arima,10,-0.17702,0.62468,-0.15811,0.55756,fraca,fraca
+3,wape_lstm,10,-0.28191,0.43003,-0.26352,0.32835,fraca,fraca
+7,wape_arima,10,0.03116,0.93189,0.04837,0.8531,desprezível,desprezível
+7,wape_lstm,10,-0.27425,0.4432,-0.19346,0.4589,fraca,fraca
+15,wape_arima,10,0.55741,0.09412,0.45354,0.0807,forte,moderada
+15,wape_lstm,10,0.61934,0.05619,0.50128,0.05355,forte,forte

@@ -84,31 +84,31 @@ def load_and_merge_data(model) -> pd.DataFrame:
 # =============================================================================
 
 
-def benjamini_hochberg(pvalues: np.ndarray, alpha: float = 0.05) -> np.ndarray:
-    """
-    Aplica a correção de Benjamini-Hochberg (FDR) em um array de p-valores.
-    Retorna um array booleano indicando quais hipóteses são rejeitadas
-    (i.e., permanecem significativas após a correção).
-    """
-    pvalues = np.asarray(pvalues)
-    n = len(pvalues)
-    order = np.argsort(pvalues)
-    ranked_p = pvalues[order]
+# def benjamini_hochberg(pvalues: np.ndarray, alpha: float = 0.05) -> np.ndarray:
+#     """
+#     Aplica a correção de Benjamini-Hochberg (FDR) em um array de p-valores.
+#     Retorna um array booleano indicando quais hipóteses são rejeitadas
+#     (i.e., permanecem significativas após a correção).
+#     """
+#     pvalues = np.asarray(pvalues)
+#     n = len(pvalues)
+#     order = np.argsort(pvalues)
+#     ranked_p = pvalues[order]
 
-    thresholds = (np.arange(1, n + 1) / n) * alpha
-    below = ranked_p <= thresholds
+#     thresholds = (np.arange(1, n + 1) / n) * alpha
+#     below = ranked_p <= thresholds
 
-    # Maior índice onde p_(i) <= (i/n)*alpha define o corte
-    if not below.any():
-        reject_sorted = np.zeros(n, dtype=bool)
-    else:
-        max_idx = np.max(np.where(below))
-        reject_sorted = np.zeros(n, dtype=bool)
-        reject_sorted[: max_idx + 1] = True
+#     # Maior índice onde p_(i) <= (i/n)*alpha define o corte
+#     if not below.any():
+#         reject_sorted = np.zeros(n, dtype=bool)
+#     else:
+#         max_idx = np.max(np.where(below))
+#         reject_sorted = np.zeros(n, dtype=bool)
+#         reject_sorted[: max_idx + 1] = True
 
-    reject = np.empty(n, dtype=bool)
-    reject[order] = reject_sorted
-    return reject
+#     reject = np.empty(n, dtype=bool)
+#     reject[order] = reject_sorted
+#     return reject
 
 
 def compute_correlations(df: pd.DataFrame) -> pd.DataFrame:
