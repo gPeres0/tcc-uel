@@ -36,6 +36,7 @@ PERIODOS = [
     ('1day', '_1d', 1),
     ('3days', '_3d', 3),
     ('7days', '_7d', 7),
+    ('15days', '_15d', 15),
 ]
 
 
@@ -77,14 +78,14 @@ def main():
             df = pd.read_csv(caminho_csv)
             data = df['valor'].dropna().values
             n_pontos = len(data)
-            print(f"  n_pontos: {n_pontos}")
+            # print(f"  n_pontos: {n_pontos}")
 
             linha = {
                 'sensor': sensor,
                 'dias': n_dias,
                 'n_pontos': n_pontos,
                 'lempelziv': np.nan,
-                # 'lyapunov': np.nan,
+                'lyapunov': np.nan,
                 'shannon': np.nan,
                 'shannon_bins': np.nan,
                 'perm': np.nan,
@@ -99,12 +100,12 @@ def main():
             else:
                 linha['lempelziv'] = round(res,5)
 
-            # # Lyapunov
-            # res, err = rodar_com_seguranca(lyapunov_exponent, data)
-            # if err:
-            #     print(f"  [lyapunov] ERRO: {err}")
-            # else:
-            #     linha['lyapunov'] = res
+            # Lyapunov
+            res, err = rodar_com_seguranca(lyapunov_exponent, data)
+            if err:
+                print(f"  [lyapunov] ERRO: {err}")
+            else:
+                linha['lyapunov'] = round(res, 5)
 
             # Shannon (usa a versão normalizada)
             res, err = rodar_com_seguranca(shannon_entropy, data)
