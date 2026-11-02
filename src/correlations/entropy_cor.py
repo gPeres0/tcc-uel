@@ -15,13 +15,21 @@ import pandas as pd
 import numpy as np
 from scipy.stats import spearmanr, kendalltau
 
+from pathlib import Path
+
 # =============================================================================
 # CONFIG — ajuste conforme a estrutura real dos seus dados
 # =============================================================================
 
 # Arquivos de entrada
-ENTROPY_PATH = "../../data/resultados_entropia.csv"
-ARIMA_PATH = "../arima/results/resultados_autoarima.csv"
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+
+ENTROPY_PATH = DATA_DIR / "resultados_entropia.csv"
+
+MODEL_PATH = {
+    "arima": DATA_DIR / "arima_results/resultados_autoarima.csv",
+    "lstm": DATA_DIR / "lstm_results/resultados_lstm.csv"
+}
 
 # Nome da coluna que identifica a janela temporal (em dias) após o merge
 COL_WINDOW = "dias"
@@ -35,34 +43,36 @@ COL_WAPE = "wape"
 # Nomes das colunas de métricas de complexidade/entropia a testar
 ENTROPY_COLS = [
     "lempelziv",
+    "lyapunov",
     "shannon",
     "perm",
-    "mse_ci",
+    "mse_ci"
 ]
 
 # Nível de significância para a correção FDR
 ALPHA = 0.05
 
+MODEL = "lstm"
+
 # Caminho de saída
-OUTPUT_PATH = "results/correlacoes_entropia_wape.csv"
+OUTPUT_PATH = DATA_DIR / f"correlations_results/correlacoes_entropia_wape_{MODEL}.csv"
 
 
-def load_and_merge_data() -> pd.DataFrame:
+def load_and_merge_data(model) -> pd.DataFrame:
     """
-    Carrega os arquivos de entropia e de AutoARIMA, normaliza os campos
+    Carrega os arquivos de entropia e do modelo, normaliza os campos
     necessários e faz o merge por (sensor, dias).
     """
     entropia = pd.read_csv(ENTROPY_PATH)
 
-    arima = pd.read_csv(ARIMA_PATH)
+    model = pd.read_csv(MODEL_PATH[model])
     # "1 dia" / "3 dias" / "7 dias" -> 1 / 3 / 7
-    arima["dias"] = arima["period"].str.extract(r"(\d+)").astype(int)
-    # "0.896%" -> 0.896 (mantido em %, não dividido por 100, para
-    # preservar a mesma unidade usada nos relatórios)
-    arima["wape"] = arima["wape"].astype(str).str.rstrip("%").astype(float)
+    model["dias"] = model["period"].str.extract(r"(\d+)").astype(int)
+    # "0.896%" -> 0.896 (mantido em %, não dividido por 100, para preservar a mesma unidade usada nos relatórios)
+    model["wape"] = model["wape"].astype(str).str.rstrip("%").astype(float)
 
     merged = entropia.merge(
-        arima[["sensor", "dias", "mae", "mse", "wape"]],
+        model[["sensor", "dias", "mae", "mse", "wape"]],
         on=["sensor", "dias"],
         how="inner",
     )
@@ -150,17 +160,17 @@ def compute_correlations(df: pd.DataFrame) -> pd.DataFrame:
 
     # Correção de múltiplas comparações (FDR), aplicada separadamente
     # para Spearman e para Kendall, sobre todos os testes do dataframe
-    for col_p, col_flag in [
-        ("spearman_p", "spearman_significant_fdr"),
-        ("kendall_p", "kendall_significant_fdr"),
-    ]:
-        mask_valid = results_df[col_p].notna()
-        results_df[col_flag] = False
-        if mask_valid.any():
-            reject = benjamini_hochberg(
-                results_df.loc[mask_valid, col_p].values, alpha=ALPHA
-            )
-            results_df.loc[mask_valid, col_flag] = reject
+    # for col_p, col_flag in [
+    #     ("spearman_p", "spearman_significant_fdr"),
+    #     ("kendall_p", "kendall_significant_fdr"),
+    # ]:
+    #     mask_valid = results_df[col_p].notna()
+    #     results_df[col_flag] = False
+    #     if mask_valid.any():
+    #         reject = benjamini_hochberg(
+    #             results_df.loc[mask_valid, col_p].values, alpha=ALPHA
+    #         )
+    #         results_df.loc[mask_valid, col_flag] = reject
 
     return results_df
 
@@ -187,7 +197,7 @@ def interpret_strength(rho: float) -> str:
 # =============================================================================
 
 if __name__ == "__main__":
-    df = load_and_merge_data()
+    df = load_and_merge_data(MODEL)
 
     missing = [
         c

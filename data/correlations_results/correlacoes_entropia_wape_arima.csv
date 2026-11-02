@@ -1,0 +1,21 @@
+window_days,metric,n,spearman_rho,spearman_p,kendall_tau,kendall_p,spearman_strength,kendall_strength
+1,lempelziv,10,0.60803,0.06218,0.40202,0.13149,forte,moderada
+1,lyapunov,10,0.04863,0.89387,0.04495,0.85746,desprezível,desprezível
+1,mse_ci,10,0.44985,0.19208,0.22473,0.36917,moderada,fraca
+1,perm,10,0.54104,0.10632,0.58431,0.01955,forte,forte
+1,shannon,10,-0.61398,0.05898,-0.53936,0.03114,forte,forte
+3,lempelziv,10,0.7447,0.01347,0.58203,0.02267,muito forte,forte
+3,lyapunov,10,-0.47879,0.16152,-0.33333,0.21637,moderada,moderada
+3,mse_ci,10,0.33333,0.34659,0.11111,0.72749,moderada,fraca
+3,perm,10,0.50303,0.13833,0.42222,0.10831,forte,moderada
+3,shannon,10,0.07879,0.82872,0.02222,1.0,desprezível,desprezível
+7,lempelziv,10,0.74164,0.01408,0.58431,0.01955,muito forte,forte
+7,lyapunov,10,-0.52727,0.11731,-0.37778,0.15574,forte,moderada
+7,mse_ci,10,0.6,0.06669,0.42222,0.10831,forte,moderada
+7,perm,10,0.58788,0.07388,0.37778,0.15574,forte,moderada
+7,shannon,10,0.05455,0.88104,-0.06667,0.8618,desprezível,desprezível
+15,lempelziv,10,0.64848,0.04254,0.46667,0.07255,forte,moderada
+15,lyapunov,10,0.33333,0.34659,0.24444,0.38072,moderada,fraca
+15,mse_ci,10,0.58788,0.07388,0.37778,0.15574,forte,moderada
+15,perm,10,0.64848,0.04254,0.46667,0.07255,forte,moderada
+15,shannon,10,0.21212,0.55631,0.15556,0.60065,fraca,fraca
