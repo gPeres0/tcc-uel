@@ -11,16 +11,14 @@ from src.plots import plot_predictions
 
 # ==================== #
 
-REFERENCIA_DIR = 'data_separation_sheet.csv'
-
 DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 REFERENCIA_DIR = DATA_DIR / "data_separation_sheet.csv"
 
 # (nome da pasta, sufixo do arquivo, número de dias)
 PERIODOS = [
-    # ('1day', '_1d', '1 dia'),
-    # ('3days', '_3d', '3 dias'),
-    # ('7days', '_7d', '7 dias'),
+    ('1day', '_1d', '1 dia'),
+    ('3days', '_3d', '3 dias'),
+    ('7days', '_7d', '7 dias'),
     ('15days', '_15d', '15 dias')
 ]
 
@@ -33,15 +31,18 @@ def sensor_name(caminho_csv, sufixo):
         base = base[: -len(sufixo)]
     return base
 
-def metrics(y_real, y_pred):
-    y_real, y_pred = np.array(y_real), np.array(y_pred)
+def metrics(y_teste, y_pred):
+    y_teste, y_pred = np.array(y_teste), np.array(y_pred)
     
-    mae = mean_absolute_error(y_real, y_pred)
-    mse = mean_squared_error(y_real, y_pred)
-    # MAPE não funciona com valores 0 e próximos, por isso o uso do WAPE (Weighted MAPE / MAD-Mean ratio)
-    wape = np.sum(np.abs(y_real - y_pred)) / np.sum(np.abs(y_real))
+    mae = mean_absolute_error(y_teste, y_pred)
+    mse = mean_squared_error(y_teste, y_pred)
+    
+    # MAPE não funciona com valores 0 e próximos, por isso o uso do WAPE (Weighted Absolute Percentage Error/Weighted MAPE)
+    # Pondera erros pelo volume
+    # Mais usado em vendas, demanda de estoque, call center, etc
+    wape = np.sum(np.abs(y_teste - y_pred)) / np.sum(np.abs(y_teste))
 
-    return mae, wape*100, mse
+    return mae, mse, wape*100
 
 # ==================== #
 
@@ -93,7 +94,7 @@ def main():
                 predicoes.append(prediction)
                 model.update(y_teste.iloc[i])
             
-            mae, wape, mse = metrics(y_teste, predicoes)
+            mae, mse, wape = metrics(y_teste, predicoes)
             
             resultados.append({
                 'sensor': sensor,
